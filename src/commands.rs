@@ -15,30 +15,23 @@ pub struct PlayerAction {
     pub player_actions: Actions,
 }
 
-#[derive(Debug)]
-pub struct Target {
-    pub target: Definition,
-}
-
-pub fn take_input() {
-    loop {
-        let mut input: String = String::new();
-        println!(">");
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read input!");
-        let trimmed = input.trim();
-        if input.trim() == "quit" {
-            break;
-        }
-        let result = parse_input(trimmed);
-        match result {
-            Ok(some) => {
-                println!("{:?}", some)
-            }
-            Err(e) => println!("{:?}", e),
+impl PlayerAction {
+    pub fn new() -> Self {
+        PlayerAction {
+            player_actions: Actions::Move,
         }
     }
+}
+
+pub fn take_input() -> Result<PlayerAction, String> {
+    let mut input: String = String::new();
+    println!(">");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read input!");
+    let trimmed = input.trim();
+    let result = parse_input(trimmed);
+    result
 }
 
 pub fn parse_input(trimmed: &str) -> Result<PlayerAction, String> {
