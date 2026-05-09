@@ -1,4 +1,5 @@
-use crate::enemy;
+use crate::enemy::Definition;
+use crate::gameplay;
 use std::collections::HashSet;
 use std::io;
 
@@ -10,9 +11,13 @@ pub enum Actions {
 }
 
 #[derive(Debug)]
-pub struct Event {
+pub struct PlayerAction {
     pub player_actions: Actions,
-    pub target: enemy::Definition,
+}
+
+#[derive(Debug)]
+pub struct Target {
+    pub target: Definition,
 }
 
 pub fn take_input() {
@@ -28,13 +33,15 @@ pub fn take_input() {
         }
         let result = parse_input(trimmed);
         match result {
-            Ok(some) => println!("{:?}", some),
+            Ok(some) => {
+                println!("{:?}", some)
+            }
             Err(e) => println!("{:?}", e),
         }
     }
 }
 
-pub fn parse_input(trimmed: &str) -> Result<Event, String> {
+pub fn parse_input(trimmed: &str) -> Result<PlayerAction, String> {
     let attack_actions: HashSet<&str> = [
         "battle",
         "fight",
@@ -167,27 +174,20 @@ pub fn parse_input(trimmed: &str) -> Result<Event, String> {
     ]
     .into();
 
-    let adversary = enemy::create_random_enemy();
-
-    println!("{:?} appeared!", adversary.enemy_type);
-
     for word in trimmed.split_whitespace() {
         let lowercase = word.to_ascii_lowercase();
 
         if attack_actions.contains(lowercase.as_str()) {
-            return Ok(Event {
+            return Ok(PlayerAction {
                 player_actions: Actions::PhysicalAttack,
-                target: adversary,
             });
         } else if magic_actions.contains(lowercase.as_str()) {
-            return Ok(Event {
+            return Ok(PlayerAction {
                 player_actions: Actions::MagicAttack,
-                target: adversary,
             });
         } else if move_actions.contains(lowercase.as_str()) {
-            return Ok(Event {
+            return Ok(PlayerAction {
                 player_actions: Actions::Move,
-                target: adversary,
             });
         }
     }
