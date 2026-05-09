@@ -1,2 +1,1 @@
-# solo-d-and-d
-Solo DnD
+basic dungeon crawling in rust
